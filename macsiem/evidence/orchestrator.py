@@ -247,6 +247,18 @@ class Orchestrator:
 
     def _run_one(self, probe, ctx, bundle_dir):
         local_ctx = dict(ctx)
+        if probe.needs_session and not os.environ.get("MACSIEM_SESSION_AGENT"):
+            # Clipboard and screen belong to the logged-in GUI session, which a
+            # root LaunchDaemon is not part of.  Hand it to the LaunchAgent.
+            from ..agent.sessionagent import request as session_request
+            payload = session_request(self.config, probe.id, local_ctx, bundle_dir)
+            result = runner_mod.ProbeResult({
+                "probe_id": probe.id, "title": probe.title,
+                "loobins": list(probe.loobins), "category": probe.category,
+                "kind": probe.kind, "privacy": probe.privacy,
+                "started": timeutil.now_iso(), "duration_ms": 0, "bytes": 0})
+            result.update(payload or {})
+            return result
         if probe.writes_artifact and bundle_dir:
             local_ctx["artifact"] = os.path.join(
                 bundle_dir, "artifacts", "%s.png" % probe.id.replace(".", "_"))

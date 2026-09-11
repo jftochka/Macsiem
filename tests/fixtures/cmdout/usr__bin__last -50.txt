@@ -1,0 +1,2 @@
+alice    ttys000   192.0.2.55   Fri Sep 11 21:01   still logged in
+reboot   ~                      Fri Sep 11 08:12

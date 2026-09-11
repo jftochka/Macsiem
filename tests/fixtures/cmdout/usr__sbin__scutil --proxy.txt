@@ -1,0 +1,5 @@
+<dictionary> {
+  HTTPEnable : 1
+  HTTPProxy : 198.51.100.9
+  HTTPPort : 8080
+}
