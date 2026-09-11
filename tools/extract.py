@@ -60,6 +60,12 @@ _SAMPLE_WORDS = re.compile(
 _VOLATILE_PREFIXES = ("/tmp/", "/private/tmp/", "/var/folders/", "~/", "/Users/")
 
 
+#: Known typos in the upstream corpus.  Kept explicit and few: silently
+#: "correcting" adversary tradecraft would be worse than missing it.
+#: - kextstat.yml's only example reads `kexstat` (missing the `t`).
+CORPUS_FIXUPS = {"kexstat": "kextstat"}
+
+
 def sha256_text(text):
     return hashlib.sha256(text.encode("utf-8", "replace")).hexdigest()
 
@@ -336,6 +342,7 @@ def build_pattern(tokens, binary_names):
         return None
     head = tokens[0]
     base = head.rsplit("/", 1)[-1]
+    base = CORPUS_FIXUPS.get(base, base)
     if base in SHELL_KEYWORDS or WILD in base or not base:
         return None
     if base not in binary_names:
@@ -396,6 +403,16 @@ def extract(code, binary_names, depth=0):
                     head = peeled[0].rsplit("/", 1)[-1]
                     if head and head not in SHELL_KEYWORDS and WILD not in head:
                         context.append(head)
+                    # A quoted command passed to a transport (`ssh host '...'`,
+                    # `su - user -c '...'`) is still the technique; several
+                    # corpus examples only appear in that form.
+                    if depth < 2:
+                        for token in peeled[1:]:
+                            if " " in token and re.match(r"^[A-Za-z/]", token.strip()):
+                                nested, nested_ctx, _ = extract(
+                                    token, binary_names, depth + 1)
+                                patterns.extend(nested)
+                                context.extend(nested_ctx)
     if depth < 2:
         for body in bodies:
             sub_patterns, sub_context, sub_mode = extract(body, binary_names, depth + 1)

@@ -7,11 +7,11 @@ This file is a review aid: a diff here means detection behaviour moved.
 | --- | --- |
 | binaries | 62 |
 | use cases | 183 |
-| rules | 249 |
-| signature tier (alerts alone) | 126 |
-| indicator tier (needs corroboration) | 106 |
-| telemetry tier (never alerts) | 17 |
-| use cases with no extractable invocation | 5 |
+| rules | 253 |
+| signature tier (alerts alone) | 128 |
+| indicator tier (needs corroboration) | 107 |
+| telemetry tier (never alerts) | 18 |
+| use cases with no extractable invocation | 3 |
 
 ## Rules by binary
 
@@ -34,11 +34,12 @@ This file is a review aid: a diff here means detection behaviour moved.
 | funzip | 1 | 0 | 0 | 1 | 55 | Execution |
 | hdiutil | 6 | 2 | 4 | 0 | 55 | Collection, Execution |
 | ioreg | 4 | 1 | 3 | 0 | 44 | Collection, Discovery |
+| kextstat | 1 | 0 | 0 | 1 | 25 | Discovery |
 | last | 3 | 0 | 1 | 2 | 25 | Discovery |
-| launchctl | 4 | 4 | 0 | 0 | 83 | Defense Evasion, Execution, Lateral Movement, Persistence |
+| launchctl | 5 | 5 | 0 | 0 | 83 | Defense Evasion, Execution, Lateral Movement, Persistence |
 | log | 3 | 3 | 0 | 0 | 95 | Credential Access, Defense Evasion |
 | lsregister | 4 | 2 | 2 | 0 | 85 | Discovery, Impact |
-| mdfind | 2 | 1 | 0 | 1 | 34 | Discovery, Reconnaissance |
+| mdfind | 3 | 1 | 1 | 1 | 95 | Defense Evasion, Discovery, Reconnaissance |
 | mdls | 2 | 2 | 0 | 0 | 100 | Collection, Defense Evasion, Execution |
 | mktemp | 1 | 0 | 1 | 0 | 83 | Defense Evasion |
 | networksetup | 15 | 11 | 4 | 0 | 85 | Command and Control, Discovery |
@@ -59,6 +60,7 @@ This file is a review aid: a diff here means detection behaviour moved.
 | scutil | 4 | 0 | 4 | 0 | 25 | Discovery |
 | security | 5 | 5 | 0 | 0 | 100 | Credential Access, Defense Evasion |
 | sfltool | 3 | 2 | 1 | 0 | 90 | Defense Evasion, Discovery |
+| sharing | 1 | 1 | 0 | 0 | 77 | Lateral Movement |
 | snmptrap | 2 | 2 | 0 | 0 | 98 | Command and Control, Exfiltration, Lateral Movement |
 | snmptrapd | 1 | 0 | 1 | 0 | 100 | Command and Control, Exfiltration, Lateral Movement |
 | softwareupdate | 2 | 0 | 2 | 0 | 20 | Discovery |
@@ -83,8 +85,6 @@ This file is a review aid: a diff here means detection behaviour moved.
 
 Prose-only entries, or examples whose commands are all non-LOOBin helpers. Covered observationally, not by a rule.
 
-- `kextstat` use case 1 - no extractable invocation
-- `mdfind` use case 3 - no extractable invocation
 - `mdls` use case 2 - no extractable invocation
 - `mktemp` use case 2 - no extractable invocation
 - `sqlite3` use case 2 - no extractable invocation

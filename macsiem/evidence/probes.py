@@ -698,10 +698,16 @@ def coverage(known_loobins, capabilities=None, privacy=None):
             runnable.append(probe.id)
         if runnable:
             entry = {"status": "covered", "probes": runnable}
-            if name in OBSERVATIONAL_ONLY:
-                # The binary itself was never executed.  Say so: the evidence is
-                # the state it would have changed, not the tool's own output.
-                note, _ = OBSERVATIONAL_ONLY[name]
+            # Distinguish "we ran this binary read-only" from "we never ran it
+            # and read the state it touches instead". Both are coverage; only
+            # one involves executing the tool.
+            invoked = any(
+                probe.kind == "exec" and probe.argv
+                and os.path.basename(probe.argv[0]) == name
+                for probe in probes if probe.id in runnable)
+            if not invoked:
+                note, _ = OBSERVATIONAL_ONLY.get(
+                    name, ("Covered by artifact state rather than by running it.", []))
                 entry["note"] = ("binary not executed; covered by artifact state. "
                                  + note)
             report[name] = entry

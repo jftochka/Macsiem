@@ -233,6 +233,8 @@ def ensure_dirs(config, mode=0o700):
     for key in ("data_dir", "log_dir", "bundle_dir"):
         directory = config.get_path("paths.%s" % key)
         if directory:
+            # As in evidence/bundle.py: makedirs only modes the leaf, so the
+            # chmod below is what actually keeps state private.
             os.makedirs(directory, mode=mode, exist_ok=True)
             try:
                 os.chmod(directory, mode)

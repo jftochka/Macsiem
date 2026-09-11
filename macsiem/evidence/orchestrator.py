@@ -262,8 +262,9 @@ class Orchestrator:
         if probe.writes_artifact and bundle_dir:
             local_ctx["artifact"] = os.path.join(
                 bundle_dir, "artifacts", "%s.png" % probe.id.replace(".", "_"))
-            os.makedirs(os.path.dirname(local_ctx["artifact"]), mode=0o700,
-                        exist_ok=True)
+            artifact_dir = os.path.dirname(local_ctx["artifact"])
+            os.makedirs(artifact_dir, mode=0o700, exist_ok=True)
+            os.chmod(artifact_dir, 0o700)
         return runner_mod.run_probe(probe, local_ctx, runner=self.runner,
                                     config=self.config, bundle_dir=bundle_dir)
 

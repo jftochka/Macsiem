@@ -1594,13 +1594,13 @@
   }
  },
  "counts": {
-  "indicator": 106,
-  "rules": 249,
-  "signature": 126,
-  "skipped_use_cases": 5,
-  "telemetry": 17
+  "indicator": 107,
+  "rules": 253,
+  "signature": 128,
+  "skipped_use_cases": 3,
+  "telemetry": 18
  },
- "generated_at": "2026-09-11T20:21:54Z",
+ "generated_at": "2026-09-11T20:48:49Z",
  "index": {
   "GetFileInfo": [
    "loobin.GetFileInfo.uc01.01",
@@ -1723,6 +1723,9 @@
    "loobin.ioreg.uc03.01",
    "loobin.ioreg.uc04.01"
   ],
+  "kextstat": [
+   "loobin.kextstat.uc01.01"
+  ],
   "last": [
    "loobin.last.uc01.01",
    "loobin.last.uc02.01",
@@ -1731,6 +1734,7 @@
   "launchctl": [
    "loobin.launchctl.uc01.01",
    "loobin.launchctl.uc02.01",
+   "loobin.sharing.uc01.01",
    "loobin.tftp.uc01.01",
    "loobin.tftp.uc03.01"
   ],
@@ -1747,7 +1751,8 @@
   ],
   "mdfind": [
    "loobin.mdfind.uc01.01",
-   "loobin.mdfind.uc02.01"
+   "loobin.mdfind.uc02.01",
+   "loobin.mdfind.uc03.01"
   ],
   "mdls": [
    "loobin.mdls.uc01.01",
@@ -1819,7 +1824,7 @@
    "loobin.osascript.uc08.01",
    "loobin.osascript.uc09.01",
    "loobin.say.uc02.01",
-   "loobin.sharing.uc01.01"
+   "loobin.sharing.uc01.03"
   ],
   "pbpaste": [
    "loobin.pbpaste.uc01.01",
@@ -1870,6 +1875,9 @@
    "loobin.sfltool.critical.resetbtm",
    "loobin.sfltool.uc01.01",
    "loobin.sfltool.uc02.01"
+  ],
+  "sharing": [
+   "loobin.sharing.uc01.02"
   ],
   "shell built-in command (bash)": [
    "loobin.disown.uc01.01"
@@ -5232,6 +5240,7 @@
   {
    "code_sha256": "f210d1870773b3e9d0b1eaf5d14053a566f3d2854abaccd122bb237e24f949f5",
    "context_tokens": [
+    "Active",
     "awk"
    ],
    "critical_operation": null,
@@ -5886,9 +5895,43 @@
    "wildcards": 0
   },
   {
+   "code_sha256": "74ad624645d0239b40e15a47b9a9fa5ceb8f630441bdd3572e21b73ada466ca1",
+   "context_tokens": [],
+   "critical_operation": null,
+   "description": "Uses kexstat showloaded to display kernel extensions and address in kernel memory it has been loaded",
+   "documented_under": "kextstat",
+   "exec_basenames": [
+    "kextstat"
+   ],
+   "exec_path_hint": null,
+   "flags_required": [],
+   "loobin": "kextstat",
+   "min_argc": 1,
+   "nested": false,
+   "positional": [],
+   "privileged": false,
+   "rule_id": "loobin.kextstat.uc01.01",
+   "severity_base": 25,
+   "source_file": "kextstat.yml",
+   "specificity": 0.0,
+   "subcommand": null,
+   "tactics": [
+    "Discovery"
+   ],
+   "tags": [
+    "kernel"
+   ],
+   "tier": "telemetry",
+   "tokenization": "strict",
+   "url": "https://www.loobins.io/binaries/kextstat/",
+   "use_case": "List kernel extensions",
+   "wildcards": 0
+  },
+  {
    "code_sha256": "25b82c59ffda102d9b4e00d92f7af4da5e9dc9f49a3ffa0a0fe0f38bd3e3b4a9",
    "context_tokens": [
-    "grep"
+    "grep",
+    "still"
    ],
    "critical_operation": null,
    "description": "The following command will display sessions that are currently active.",
@@ -6293,7 +6336,11 @@
   {
    "code_sha256": "4ed51a1f899c36b89622eeafdd3aa9e50dba26de2e6d2edc0ab0aff0e929db59",
    "context_tokens": [
-    "grep"
+    "bindings:",
+    "grep",
+    "more",
+    "name:",
+    "path:"
    ],
    "critical_operation": null,
    "description": "The -dump flag can be used to get a list of apps and their bindings",
@@ -6441,6 +6488,50 @@
    "tokenization": "strict",
    "url": "https://www.loobins.io/binaries/mdfind/",
    "use_case": "Use mdfind to search for AWS Keys",
+   "wildcards": 1
+  },
+  {
+   "code_sha256": "bfd10cc345f66072a14462d2bc61b7571134a1c584acaa54f2c200ca0fcb20c0",
+   "context_tokens": [
+    "'",
+    "bundleId"
+   ],
+   "critical_operation": null,
+   "description": "Allows an attacker to determine if specific applications are installed and can be leveraged",
+   "documented_under": "mdfind",
+   "exec_basenames": [
+    "mdfind"
+   ],
+   "exec_path_hint": null,
+   "flags_required": [],
+   "loobin": "mdfind",
+   "min_argc": 3,
+   "nested": true,
+   "positional": [
+    {
+     "eq": "=",
+     "idx": 2
+    }
+   ],
+   "privileged": false,
+   "rule_id": "loobin.mdfind.uc03.01",
+   "severity_base": 95,
+   "source_file": "mdfind.yml",
+   "specificity": 1.4,
+   "subcommand": "=",
+   "tactics": [
+    "Reconnaissance",
+    "Discovery",
+    "Defense Evasion"
+   ],
+   "tags": [
+    "osascript",
+    "xcsset"
+   ],
+   "tier": "indicator",
+   "tokenization": "strict",
+   "url": "https://www.loobins.io/binaries/mdfind/",
+   "use_case": "Use mdfind to search for apps to infect",
    "wildcards": 1
   },
   {
@@ -8318,7 +8409,13 @@
   },
   {
    "code_sha256": "f1bd34b607c0d04506d4ab4e39e82f90d719f4b06723dacdcba4e4eb9abeb010",
-   "context_tokens": [],
+   "context_tokens": [
+    "ObjC.import(Cocoa)",
+    "nObjC.import(stdlib)",
+    "ncurrentApp.doShellScript(open -a Calculator.app)",
+    "ncurrentApp.includeStandardAdditions",
+    "nvar"
+   ],
    "critical_operation": null,
    "description": "JXA is often used by red teams (and potentially attackers) as a macOS payload, as JXA is native to macOS and can access various internal macOS APIs (such as Cocoa, Foundation, OSAKit, etc.). The osascript binary can be used to execute JXA payloads by simply running \"osascript [file.js]\" but some malware or offensive tools may also use \"osascript -l JavaScript [file.js]\".",
    "documented_under": "osascript",
@@ -8415,6 +8512,7 @@
   {
    "code_sha256": "2d83daccdf9728e6e7db064873dd63544e9bed459277b41b99773a43ec508746",
    "context_tokens": [
+    "bash",
     "ssh"
    ],
    "critical_operation": null,
@@ -8506,6 +8604,9 @@
   {
    "code_sha256": "e030fb968e06957fa9dc75d07244083cd0d20138b63fddd1ef0cad1cf4109192",
    "context_tokens": [
+    "base64",
+    "bash",
+    "chmod",
     "end",
     "script",
     "tell"
@@ -9874,6 +9975,127 @@
    "code_sha256": "ada6bad84dea2226863da0d3b78b306bd3274c13920b218fe74bba1f7ecfe169",
    "context_tokens": [
     "cp",
+    "mkdir",
+    "ssh"
+   ],
+   "critical_operation": null,
+   "description": "With SSH access to the target, the sharing utility can create an SMB share pointing to a directory on the target. Combined with the macOS smbd LaunchDaemon, the share becomes accessible over the network. The attacker can then mount the share using osascript and copy files directly into it, which appear immediately in the target's share directory. The -s 001 flag enables SMB access on the share.",
+   "documented_under": "sharing",
+   "exec_basenames": [
+    "launchctl"
+   ],
+   "exec_path_hint": null,
+   "flags_required": [
+    "-w"
+   ],
+   "loobin": "launchctl",
+   "min_argc": 4,
+   "nested": true,
+   "positional": [
+    {
+     "eq": "load",
+     "idx": 1
+    },
+    {
+     "eq": "-w",
+     "idx": 2
+    },
+    {
+     "eq": "/System/Library/LaunchDaemons/com.apple.smbd.plist",
+     "idx": 3
+    }
+   ],
+   "privileged": true,
+   "rule_id": "loobin.sharing.uc01.01",
+   "severity_base": 77,
+   "source_file": "sharing.yml",
+   "specificity": 3.5,
+   "subcommand": "load",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "tags": [
+    "smb",
+    "file-sharing",
+    "file-transfer",
+    "lateral-movement"
+   ],
+   "tier": "signature",
+   "tokenization": "strict",
+   "url": "https://www.loobins.io/binaries/sharing/",
+   "use_case": "Create an SMB share on a target over SSH for lateral tool transfer",
+   "wildcards": 0
+  },
+  {
+   "code_sha256": "ada6bad84dea2226863da0d3b78b306bd3274c13920b218fe74bba1f7ecfe169",
+   "context_tokens": [
+    "cp",
+    "mkdir",
+    "ssh"
+   ],
+   "critical_operation": null,
+   "description": "With SSH access to the target, the sharing utility can create an SMB share pointing to a directory on the target. Combined with the macOS smbd LaunchDaemon, the share becomes accessible over the network. The attacker can then mount the share using osascript and copy files directly into it, which appear immediately in the target's share directory. The -s 001 flag enables SMB access on the share.",
+   "documented_under": "sharing",
+   "exec_basenames": [
+    "sharing"
+   ],
+   "exec_path_hint": null,
+   "flags_required": [
+    "-a",
+    "-n",
+    "-s"
+   ],
+   "loobin": "sharing",
+   "min_argc": 7,
+   "nested": true,
+   "positional": [
+    {
+     "eq": "-a",
+     "idx": 1
+    },
+    {
+     "idx": 2,
+     "startswith": "/Users/"
+    },
+    {
+     "eq": "-n",
+     "idx": 3
+    },
+    {
+     "eq": "share",
+     "idx": 4
+    },
+    {
+     "eq": "-s",
+     "idx": 5
+    }
+   ],
+   "privileged": true,
+   "rule_id": "loobin.sharing.uc01.02",
+   "severity_base": 77,
+   "source_file": "sharing.yml",
+   "specificity": 4.2,
+   "subcommand": "share",
+   "tactics": [
+    "Lateral Movement"
+   ],
+   "tags": [
+    "smb",
+    "file-sharing",
+    "file-transfer",
+    "lateral-movement"
+   ],
+   "tier": "signature",
+   "tokenization": "strict",
+   "url": "https://www.loobins.io/binaries/sharing/",
+   "use_case": "Create an SMB share on a target over SSH for lateral tool transfer",
+   "wildcards": 1
+  },
+  {
+   "code_sha256": "ada6bad84dea2226863da0d3b78b306bd3274c13920b218fe74bba1f7ecfe169",
+   "context_tokens": [
+    "cp",
+    "mkdir",
     "ssh"
    ],
    "critical_operation": null,
@@ -9896,7 +10118,7 @@
     }
    ],
    "privileged": false,
-   "rule_id": "loobin.sharing.uc01.01",
+   "rule_id": "loobin.sharing.uc01.03",
    "severity_base": 71,
    "source_file": "sharing.yml",
    "specificity": 1.0,
@@ -9920,6 +10142,7 @@
    "code_sha256": "b141766361ccc353050c07100d9ebb9ad864ff7eb0ce0d0a8e956a1b7c30dc73",
    "context_tokens": [
     ">",
+    "MD5:",
     "base64",
     "basename",
     "cat",
@@ -9985,6 +10208,7 @@
    "code_sha256": "b141766361ccc353050c07100d9ebb9ad864ff7eb0ce0d0a8e956a1b7c30dc73",
    "context_tokens": [
     ">",
+    "MD5:",
     "base64",
     "basename",
     "cat",
@@ -10075,6 +10299,7 @@
    "code_sha256": "b141766361ccc353050c07100d9ebb9ad864ff7eb0ce0d0a8e956a1b7c30dc73",
    "context_tokens": [
     ">",
+    "MD5:",
     "base64",
     "basename",
     "cat",
@@ -11888,7 +12113,9 @@
   },
   {
    "code_sha256": "2dc3e697966c8613f5f96593e1ab1a196923c9013c2d619a50a389b01d06928c",
-   "context_tokens": [],
+   "context_tokens": [
+    "load"
+   ],
    "critical_operation": null,
    "description": "An attacker can execute a malicious .dylib from stdin by echoing a load command and piping to tclsh. This will bypass code signing requirements.",
    "documented_under": "tclsh",

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.9 is the floor: macOS ships 3.9.6, so the agent must run there.
+        python-version: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # No install step: the agent is standard library only, on purpose.
+      - name: Test suite
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: End-to-end selftest (replays a recorded intrusion)
+        run: python -m macsiem selftest
+
+      - name: Coverage of all 62 LOOBins
+        run: python -m macsiem probes --coverage
+
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # The gate that matters: no shell execution, every probe read-only,
+      # and 1000+ hostile mutations of the catalog all rejected.
+      - name: Safety invariants
+        run: python -m unittest tests.test_safety -v

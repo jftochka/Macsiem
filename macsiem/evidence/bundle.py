@@ -41,8 +41,14 @@ class Bundle:
         self.artifacts = []
         self.custody = []
         self.manifest = {}
-        os.makedirs(os.path.join(self.path, "artifacts"), mode=0o700, exist_ok=True)
-        os.makedirs(os.path.join(self.path, "analysis"), mode=0o700, exist_ok=True)
+        # makedirs applies `mode` only to the leaf directory; intermediate
+        # directories get 0777 & ~umask, which is world-readable.  With content
+        # capture enabled these directories hold screenshots and clipboard text,
+        # so each level is created and chmod'ed explicitly.
+        for directory in (self.path, os.path.join(self.path, "artifacts"),
+                          os.path.join(self.path, "analysis")):
+            os.makedirs(directory, mode=0o700, exist_ok=True)
+            os.chmod(directory, 0o700)
         self._record_custody("created", {"path": self.path})
 
     # -- custody -----------------------------------------------------------
@@ -108,7 +114,9 @@ class Bundle:
 
     def _write(self, relative, text):
         absolute = os.path.join(self.path, relative)
-        os.makedirs(os.path.dirname(absolute), mode=0o700, exist_ok=True)
+        directory = os.path.dirname(absolute)
+        os.makedirs(directory, mode=0o700, exist_ok=True)
+        os.chmod(directory, 0o700)
         with open(absolute, "w") as handle:
             handle.write(text if isinstance(text, str) else str(text))
         os.chmod(absolute, 0o600)
